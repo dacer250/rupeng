@@ -1,1 +1,1 @@
-# web of school
+# web of education
