@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rupeng.mapper.UserMapper">
+
+	<insert id="insert" parameterType="User">
+		insert into
+		T_Users(name,isMale,email,phone,passwordSalt,password,school,createTime)
+		values(#{name},#{isMale},#{email},#{phone},#{passwordSalt},#{password},#{school},#{createTime});
+	</insert>
+
+	<update id="update" parameterType="User">
+		update T_Users set
+		name=#{name},
+		isMale=#{isMale},
+		email=#{email},
+		phone=#{phone},
+		passwordSalt=#{passwordSalt},
+		password=#{password},
+		school=#{school},
+		isTeacher=#{isTeacher}
+		where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="long">
+		update T_Users set isDeleted=true where id=#{id}
+	</delete>
+
+	<select id="select" parameterType="User" resultType="User">
+		select * from T_Users
+		where isDeleted=false
+		<if test="id!=null"> and id=#{id} </if>
+		<if test="name!=null"> and name=#{name} </if>
+		<if test="isMale!=null"> and isMale=#{isMale} </if>
+		<if test="email!=null"> and email=#{email} </if>
+		<if test="phone!=null"> and phone=#{phone} </if>
+		<if test="password!=null"> and password=#{password} </if>
+		<if test="school!=null"> and school=#{school} </if>
+		<if test="isTeacher!=null"> and isTeacher=#{isTeacher} </if>
+	</select>
+
+	<select id="search" parameterType="map" resultType="User">
+		select * from T_Users
+		where isDeleted=false
+		<if test="param!=null"> and (name like #{param} or school like #{param} or email like #{param} or phone like #{param})</if>
+		<if test="beginTime!=null"> and createTime &gt;= #{beginTime}</if>
+		<if test="endTime!=null"> and createTime &lt;= #{endTime}</if>
+	</select>
+</mapper>

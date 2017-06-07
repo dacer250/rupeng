@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rupeng.mapper.ClassesMapper">
+
+	<insert id="insert" parameterType="Classes">
+		insert into T_Classes(id,name,subjectId)
+		values(#{id},#{name},#{subjectId});
+	</insert>
+
+	<update id="update" parameterType="Classes">
+		update T_Classes set
+		name=#{name},
+		subjectId=#{subjectId}
+		where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="long">
+		update T_Classes set isDeleted=true where id=#{id}
+	</delete>
+
+	<select id="select" parameterType="Classes" resultType="Classes">
+		select * from T_Classes
+		where isDeleted=false
+		<if test="id!=null"> and id=#{id} </if>
+		<if test="name!=null"> and name=#{name} </if>
+		<if test="subjectId!=null"> and subjectId=#{subjectId} </if>
+	</select>
+
+</mapper>

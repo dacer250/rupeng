@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rupeng.mapper.RoleMapper">
+
+	<insert id="insert" parameterType="Role">
+		insert into T_Roles(name,description) values(#{name},#{description})
+	</insert>
+
+	<update id="update" parameterType="Role">
+		update T_Roles set
+		name=#{name},
+		description=#{description}
+		where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="long">
+		update T_Roles set isDeleted=true where id=#{id}
+	</delete>
+
+
+	<select id="select" parameterType="Role" resultType="Role">
+		select * from T_Roles
+		where isDeleted=false
+		<if test="id!=null"> and id=#{id} </if>
+		<if test="name!=null"> and name=#{name} </if>
+		<if test="description!=null"> and description like #{description} </if>
+	</select>
+
+</mapper>

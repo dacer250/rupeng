@@ -1,0 +1,131 @@
+package com.rupeng.web.controller;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.rupeng.pojo.Setting;
+import com.rupeng.pojo.User;
+import com.rupeng.service.SettingService;
+import com.rupeng.util.AjaxResult;
+import com.rupeng.util.CommonUtils;
+import com.rupeng.util.EmailUtils;
+import com.rupeng.util.ImageCodeUtils;
+import com.rupeng.util.JedisUtils;
+import com.rupeng.util.JsonUtils;
+import com.rupeng.util.SMSUtils;
+
+@Controller
+public class OtherController {
+	@Autowired
+	private SettingService settingService;
+	
+	@RequestMapping("/")
+	public ModelAndView index(){
+		return new ModelAndView("index");
+	}
+	
+	@RequestMapping("/imageCode.do")
+	public void imageCode(HttpServletRequest request,HttpServletResponse response){
+		ImageCodeUtils.sendImageCode(request.getSession(), response);
+	}
+	
+	@RequestMapping("/smsCode.do")
+	public @ResponseBody AjaxResult smsCode(String phone,HttpServletRequest request){
+		if (CommonUtils.isEmpty(phone)) {
+			return AjaxResult.errorInstance("手机号不能为空");
+		}
+		if (!CommonUtils.isPhone(phone)) {
+			return AjaxResult.errorInstance("手机号格式错误");
+		}
+		
+		Setting url = settingService.selectByName("sms_url");
+		Setting username = settingService.selectByName("sms_username");
+		Setting appKey = settingService.selectByName("sms_app_key");
+		Setting template = settingService.selectByName("sms_code_template");
+		
+		//发送短信验证码
+		SMSUtils.sendSMSCode(request.getSession(), url.getValue(), username.getValue(), appKey.getValue(), template.getValue(), phone);
+		return AjaxResult.successInstance("短信验证码已发送");
+	}
+	
+	@RequestMapping("/emailCode.do")
+	public @ResponseBody AjaxResult emailCode(String email,HttpServletRequest request){
+		if (CommonUtils.isEmpty(email)) {
+			return AjaxResult.errorInstance("邮箱不能为空");
+		}
+		if (!CommonUtils.isEmail(email)) {
+			return AjaxResult.errorInstance("邮箱格式错误");
+		}
+		
+		/*
+		Setting smtpServer = settingService.selectByName("email_smtp_host");
+		Setting username = settingService.selectByName("email_username");
+		Setting password = settingService.selectByName("email_password");
+		Setting from = settingService.selectByName("email_from");
+		
+		//发送邮箱验证码
+		EmailUtils.sendEmailCode(request.getSession(), smtpServer.getValue(), username.getValue(), password.getValue(), from.getValue(), email);
+		*/
+		
+		Setting url = settingService.selectByName("sendcloud_email_url");
+		Setting apiUser = settingService.selectByName("sendcloud_email_api_user");
+		Setting apiKey = settingService.selectByName("sendcloud_email_api_key");
+		Setting from = settingService.selectByName("sendcloud_email_from");
+		Setting templateInvokeName = settingService.selectByName("sendcloud_email_code_template");
+		
+		EmailUtils.sendEmailCodeBySendCloud(request.getSession(), url.getValue(), apiUser.getValue(), apiKey.getValue(), from.getValue(), email, templateInvokeName.getValue());
+		
+		return AjaxResult.successInstance("邮箱验证码已发送");
+	}
+	
+	//获取新消息通知
+	@RequestMapping("/notification.do")
+	public @ResponseBody AjaxResult notificationList(HttpServletRequest request){
+		User user = (User) request.getSession().getAttribute("user");
+		if (user==null) {
+			return AjaxResult.errorInstance("用户未登录");
+		}
+		
+		//获得当前登录用户所有的通知消息，并且把通知消息从redis里面删除掉
+		Set<String> notifications = JedisUtils.smembersAndDel("notification_"+user.getId());
+		
+		//没有通知消息就返回null
+		if (CommonUtils.isEmpty(notifications)) {
+			return AjaxResult.successInstance(null);
+		}
+		
+		//json转换为对象
+		List<Object> list = new ArrayList<>();
+		for (String string : notifications) {
+			list.add(JsonUtils.toBean(string, Object.class));
+		}
+		
+		return AjaxResult.successInstance(list);
+	}
+	
+	//响应uediter的配置文件
+	@RequestMapping(value="/upload.do",method=RequestMethod.GET)
+	public ModelAndView upload(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException{
+		request.getRequestDispatcher("/lib/ueditor/jsp/config.json").forward(request, response);
+		return null;
+	}
+	
+	
+	public @ResponseBody Map<String, String> uploadSubmit(){
+		
+	}
+}

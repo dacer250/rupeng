@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rupeng.mapper.CardMapper">
+
+	<insert id="insert" parameterType="Card">
+		insert into T_Cards(name,createTime,description,courseware)
+		values(#{name},now(),#{description},#{courseware})
+	</insert>
+
+	<update id="update" parameterType="Card">
+		update T_Cards set
+		name=#{name},
+		description=#{description},
+		courseware=#{courseware}
+		where id=#{id}
+	</update>
+
+
+	<delete id="delete" parameterType="long">
+		update T_Cards set isDeleted=true where id=#{id}
+	</delete>
+
+
+
+	<select id="select" parameterType="Card" resultType="Card">
+		select * from T_Cards
+		where isDeleted=false
+		<if test="id!=null"> and id=#{id} </if>
+		<if test="name!=null"> and name=#{name} </if>
+		<if test="createTime!=null"> and createTime=#{createTime} </if>
+		<if test="description!=null"> and description=#{description} </if>
+		<if test="courseware!=null"> and courseware=#{courseware} </if>
+	</select>
+
+
+</mapper>

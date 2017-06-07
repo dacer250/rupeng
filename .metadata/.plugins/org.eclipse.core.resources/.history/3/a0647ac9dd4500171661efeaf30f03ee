@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rupeng.mapper.QuestionMapper">
+
+	<insert id="insert" parameterType="Question">
+		insert into
+		T_Questions(userId,username,segmentId,courseInfo,errorCode,errorInfo,description,createTime)
+		values(#{userId},#{username},#{segmentId},#{courseInfo},#{errorCode},#{errorInfo},#{description},#{createTime});
+	</insert>
+
+	<update id="update" parameterType="Question">
+		update T_Questions set
+		userId=#{userId},
+		username=#{username},
+		segmentId=#{segmentId},
+		courseInfo=#{courseInfo},
+		errorCode=#{errorCode},
+		errorInfo=#{errorInfo},
+		description=#{description},
+		createTime=#{createTime},
+		resolvedTime=#{resolvedTime},
+		isResolved=#{isResolved}
+		where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="long">
+		update T_Questions set isDeleted=true where id=#{id}
+	</delete>
+
+	<select id="select" parameterType="Question" resultType="Question">
+		select * from T_Questions
+		where isDeleted=false
+		<if test="id!=null"> and id=#{id} </if>
+		<if test="userId"> and userId=#{userId} </if>
+		<if test="username"> and username=#{username} </if>
+		<if test="segmentId!=null"> and segmentId=#{segmentId} </if>
+		<if test="courseInfo!=null"> and courseInfo like #{courseInfo} </if>
+		<if test="errorCode!=null"> and errorCode like #{errorCode} </if>
+		<if test="errorInfo!=null"> and errorInfo like #{errorInfo} </if>
+		<if test="description!=null"> and description like #{description} </if>
+		<if test="isResolved!=null"> and isResolved = #{isResolved} </if>
+	</select>
+	
+	<select id="selectMyAnswered" parameterType="long" resultType="Question">
+		select q.* from t_questions q
+		left join t_questionAnswers qa on q.id=qa.questionId
+		where q.isDeleted=false and qa.userId=#{userId}
+		<!-- select q.* from t_questions q 
+		where q.isDeleted=false 
+		and q.id in (select distinct qa.questionId from t_questionAnswers qa where qa.userId=#{userId}) -->
+	</select>
+
+</mapper>

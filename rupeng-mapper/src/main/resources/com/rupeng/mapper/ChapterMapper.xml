@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rupeng.mapper.ChapterMapper">
+
+	<insert id="insert" parameterType="Chapter">
+		insert into T_Chapters(cardId,seqNum,name,description)
+		values(#{cardId},#{seqNum},#{name},#{description})
+	</insert>
+
+	<update id="update" parameterType="Chapter">
+		update T_Chapters set
+		cardId=#{cardId},
+		seqNum=#{seqNum},
+		name=#{name},
+		description=#{description}
+		where id=#{id}
+	</update>
+
+
+	<delete id="delete" parameterType="long">
+		update T_Chapters set isDeleted=true where id=#{id}
+	</delete>
+
+
+
+	<select id="select" parameterType="Chapter" resultType="Chapter">
+		select * from T_Chapters
+		where isDeleted=false
+		<if test="id!=null"> and id=#{id} </if>
+		<if test="cardId!=null"> and cardId=#{cardId} </if>
+		<if test="seqNum!=null"> and seqNum=#{seqNum} </if>
+		<if test="name!=null"> and name=#{name} </if>
+		<if test="description!=null"> and description=#{description} </if>
+	</select>
+
+</mapper>

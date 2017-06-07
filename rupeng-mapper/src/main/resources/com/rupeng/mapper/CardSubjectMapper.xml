@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rupeng.mapper.CardSubjectMapper">
+
+	<insert id="insert" parameterType="CardSubject">
+		insert into T_CardSubjects(cardId,subjectId,seqNum)
+		values(#{cardId},#{subjectId},#{seqNum})
+	</insert>
+
+	<update id="update" parameterType="CardSubject">
+		update T_CardSubjects set
+		cardId=#{cardId},
+		subjectId=#{subjectId},
+		seqNum=#{seqNum}
+		where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="long">
+		delete from T_CardSubjects where id=#{id}
+	</delete>
+
+	<delete id="deleteByFirstId" parameterType="long">
+		delete from T_CardSubjects where cardId=#{cardId}
+	</delete>
+
+	<delete id="deleteBySecondId" parameterType="long">
+		delete from T_CardSubjects where subjectId=#{subjectId}
+	</delete>
+
+	<select id="select" parameterType="CardSubject" resultType="CardSubject">
+		select * from T_CardSubjects
+		<where>
+			<if test="id!=null"> and id=#{id} </if>
+			<if test="cardId!=null"> and cardId=#{cardId} </if>
+			<if test="subjectId!=null"> and subjectId=#{subjectId} </if>
+		</where>
+	</select>
+
+
+	<select id="selectFirstListBySecondId" parameterType="long"
+		resultType="Card">
+		select f.*
+		from T_CardSubjects fs left join T_Cards f on fs.cardId=f.id
+		where f.isDeleted=false and fs.subjectId=#{subjectId}
+	</select>
+
+	<select id="selectSecondListByFirstId" parameterType="long"
+		resultType="Subject">
+		select s.*
+		from T_CardSubjects fs left join T_Subjects s on fs.subjectId=s.id
+		where s.isDeleted=false and fs.cardId=#{cardId}
+	</select>
+</mapper>

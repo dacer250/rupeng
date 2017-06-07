@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rupeng.mapper.UserCardMapper">
+
+	<insert id="insert" parameterType="UserCard">
+		insert into T_UserCards(userId,cardId,createTime,endTime)
+		values(#{userId},#{cardId},#{createTime},#{endTime})
+	</insert>
+
+	<update id="update" parameterType="UserCard">
+		update T_UserCards set
+		userId=#{userId},
+		cardId=#{cardId},
+		where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="long">
+		delete from T_UserCards where id=#{id}
+	</delete>
+
+	<delete id="deleteByFirstId" parameterType="long">
+		delete from T_UserCards where userId=#{userId}
+	</delete>
+
+	<delete id="deleteBySecondId" parameterType="long">
+		delete from T_UserCards where cardId=#{cardId}
+	</delete>
+
+	<select id="select" parameterType="UserCard" resultType="UserCard">
+		select * from T_UserCards
+		<where>
+			<if test="id!=null"> and id=#{id} </if>
+			<if test="userId!=null"> and userId=#{userId} </if>
+			<if test="cardId!=null"> and cardId=#{cardId} </if>
+		</where>
+	</select>
+
+	<select id="selectFirstListBySecondId" parameterType="long"
+		resultType="User">
+		select f.*
+		from T_UserCards fs left join T_Users f on fs.userId=f.id
+		where f.isDeleted=false and fs.cardId=#{cardId}
+	</select>
+
+	<select id="selectSecondListByFirstId" parameterType="long"
+		resultType="Card">
+		select s.*
+		from T_UserCards fs left join T_Cards s on fs.cardId=s.id
+		where s.isDeleted=false and fs.userId=#{userId}
+	</select>
+
+</mapper>

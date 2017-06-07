@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rupeng.mapper.RolePermissionMapper">
+
+	<insert id="insert" parameterType="RolePermission">
+		insert into T_RolePermissions(roleId,permissionId)
+		values(#{roleId},#{permissionId})
+	</insert>
+
+	<update id="update" parameterType="RolePermission">
+		update T_RolePermissions set
+		roleId=#{roleId},
+		permissionId=#{permissionId}
+		where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="long">
+		delete from T_RolePermissions where id=#{id}
+	</delete>
+
+	<delete id="deleteByFirstId" parameterType="long">
+		delete from T_RolePermissions where roleId=#{roleId}
+	</delete>
+
+	<delete id="deleteBySecondId" parameterType="long">
+		delete from T_RolePermissions where permissionId=#{permissionId}
+	</delete>
+
+
+	<select id="select" parameterType="RolePermission" resultType="RolePermission">
+		select * from T_RolePermissions
+		<where>
+			<if test="id!=null"> and id=#{id} </if>
+			<if test="roleId!=null"> and roleId=#{roleId} </if>
+			<if test="permissionId!=null"> and permissionId=#{permissionId} </if>
+		</where>
+	</select>
+
+
+	<select id="selectFirstListBySecondId" parameterType="long"
+		resultType="Role">
+		select f.*
+		from T_RolePermissions fs left join T_Roles f on fs.roleId=f.id
+		where f.isDeleted=false and fs.permissionId=#{permissionId}
+	</select>
+
+	<select id="selectSecondListByFirstId" parameterType="long"
+		resultType="Permission">
+		select s.*
+		from T_RolePermissions fs left join T_Permissions s on
+		fs.permissionId=s.id
+		where s.isDeleted=false and fs.roleId=#{roleId}
+	</select>
+
+</mapper>

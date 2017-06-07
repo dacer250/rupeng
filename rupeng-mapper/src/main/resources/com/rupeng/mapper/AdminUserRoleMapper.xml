@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rupeng.mapper.AdminUserRoleMapper">
+
+	<insert id="insert" parameterType="AdminUserRole">
+		insert into T_AdminUserRoles(adminUserId,roleId)
+		values(#{adminUserId},#{roleId})
+	</insert>
+
+	<update id="update" parameterType="AdminUserRole">
+		update T_AdminUserRoles set
+		adminUserId=#{adminUserId},
+		roleId=#{roleId}
+		where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="long">
+		delete from T_AdminUserRoles where id=#{id}
+	</delete>
+
+	<delete id="deleteByFirstId" parameterType="long">
+		delete from T_AdminUserRoles where adminUserId=#{adminUserId}
+	</delete>
+
+	<delete id="deleteBySecondId" parameterType="long">
+		delete from T_AdminUserRoles where roleId=#{roleId}
+	</delete>
+
+	<select id="select" parameterType="AdminUserRole" resultType="AdminUserRole">
+		select * from T_AdminUserRoles
+		<where>
+			<if test="id!=null"> and id=#{id} </if>
+			<if test="adminUserId!=null"> and adminUserId=#{adminUserId} </if>
+			<if test="roleId!=null"> and roleId=#{roleId} </if>
+		</where>
+	</select>
+
+	<select id="selectFirstListBySecondId" parameterType="long"
+		resultType="AdminUser">
+		select f.*
+		from T_AdminUserRoles fs left join T_AdminUsers f on fs.adminUserId=f.id
+		where f.isDeleted=false and fs.roleId=#{roleId}
+	</select>
+
+	<select id="selectSecondListByFirstId" parameterType="long"
+		resultType="Role">
+		select s.*
+		from T_AdminUserRoles fs left join T_Roles s on fs.roleId=s.id
+		where s.isDeleted=false and fs.adminUserId=#{adminUserId}
+	</select>
+	
+	<select id="checkPermission" parameterType="map" resultType="integer">
+		select count(*) from T_AdminUserRoles ar
+			left join T_Roles r on r.id=ar.roleId
+			left join T_RolePermissions rp on rp.roleId=r.id
+			left join T_Permissions p on p.id=rp.permissionId
+		where r.isDeleted=false and p.isDeleted=false 
+			and ar.adminUserId=#{adminUserId} and p.path=#{path}
+	</select>
+
+</mapper>

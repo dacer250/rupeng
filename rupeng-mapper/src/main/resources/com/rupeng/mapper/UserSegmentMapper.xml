@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rupeng.mapper.UserSegmentMapper">
+
+	<insert id="insert" parameterType="UserSegment">
+		insert into T_UserSegments(userId,segmentId,createTime)
+		values(#{userId},#{segmentId},#{createTime})
+	</insert>
+
+	<update id="update" parameterType="UserSegment">
+		update T_UserSegments set
+		userId=#{userId},
+		segmentId=#{segmentId}
+		where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="long">
+		delete from T_UserSegments where id=#{id}
+	</delete>
+
+	<delete id="deleteByFirstId" parameterType="long">
+		delete from T_UserSegments where userId=#{userId}
+	</delete>
+
+	<delete id="deleteBySecondId" parameterType="long">
+		delete from T_UserSegments where segmentId=#{segmentId}
+	</delete>
+
+
+	<select id="select" parameterType="UserSegment" resultType="UserSegment">
+		select * from T_UserSegments
+		<where>
+			<if test="id!=null"> and id=#{id} </if>
+			<if test="userId!=null"> and userId=#{userId} </if>
+			<if test="segmentId!=null"> and segmentId=#{segmentId} </if>
+		</where>
+	</select>
+
+	<select id="selectFirstListBySecondId" parameterType="long"
+		resultType="Classes">
+		select f.*
+		from T_UserSegments fs left join T_Segments f on fs.classesId=f.id
+		where f.isDeleted=false and fs.userId=#{userId}
+	</select>
+
+	<select id="selectSecondListByFirstId" parameterType="long"
+		resultType="Segment">
+		select s.*
+		from T_UserSegments fs left join T_Segments s on t.segmentId=s.id
+		where s.isDeleted=false and fs.userId=#{userId}
+	</select>
+
+
+</mapper>

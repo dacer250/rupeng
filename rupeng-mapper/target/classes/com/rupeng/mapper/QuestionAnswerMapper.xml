@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rupeng.mapper.QuestionAnswerMapper">
+
+	<insert id="insert" parameterType="QuestionAnswer">
+		insert into
+		T_QuestionAnswers(userId,username,questionId,parentId,content,createTime,isAdopted)
+		values(#{userId},#{username},#{questionId},#{parentId},#{content},#{createTime},#{isAdopted});
+	</insert>
+
+	<update id="update" parameterType="QuestionAnswer">
+		update T_QuestionAnswers set
+		userId=#{userId},
+		username=#{username},
+		questionId=#{questionId},
+		parentId=#{parentId},
+		content=#{content},
+		createTime=#{createTime},
+		isAdopted=#{isAdopted}
+		where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="long">
+		update T_QuestionAnswers set isDeleted=true where id=#{id}
+	</delete>
+
+	<select id="select" parameterType="QuestionAnswer" resultType="QuestionAnswer">
+		select * from T_QuestionAnswers
+		where isDeleted=false
+		<if test="id!=null"> and id=#{id} </if>
+		<if test="userId"> and userId=#{userId} </if>
+		<if test="username"> and username=#{username} </if>
+		<if test="questionId!=null"> and questionId=#{questionId} </if>
+		<if test="parentId!=null"> and parentId=#{parentId} </if>
+		<if test="content!=null"> and content like #{content} </if>
+		<if test="isAdopted!=null"> and isAdopted=#{isAdopted} </if>
+	</select>
+
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rupeng.mapper.ClassesUserMapper">
+
+	<insert id="insert" parameterType="ClassesUser">
+		insert into T_ClassesUsers(classesId,userId) values(#{classesId},#{userId})
+	</insert>
+
+	<update id="update" parameterType="ClassesUser">
+		update T_ClassesUsers set
+		classesId=#{classesId},
+		userId=#{userId}
+		where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="long">
+		delete from T_ClassesUsers where id=#{id}
+	</delete>
+
+	<delete id="deleteByFirstId" parameterType="long">
+		delete from T_ClassesUsers where classesId=#{classesId}
+	</delete>
+
+	<delete id="deleteBySecondId" parameterType="long">
+		delete from T_ClassesUsers where userId=#{userId}
+	</delete>
+
+
+	<select id="select" parameterType="ClassesUser" resultType="ClassesUser">
+		select * from T_ClassesUsers
+		<where>
+			<if test="id!=null"> and id=#{id} </if>
+			<if test="classesId!=null"> and classesId=#{classesId} </if>
+			<if test="userId!=null"> and userId=#{userId} </if>
+		</where>
+	</select>
+
+	<select id="selectFirstListBySecondId" parameterType="long"
+		resultType="Classes">
+		select f.*
+		from T_ClassesUsers fs left join T_Classes f on fs.classesId=f.id
+		where f.isDeleted=false and fs.userId=#{userId}
+	</select>
+
+	<select id="selectSecondListByFirstId" parameterType="long"
+		resultType="User">
+		select s.*
+		from T_ClassesUsers fs left join T_Users s on fs.userId=s.id
+		where s.isDeleted=false and fs.classesId=#{classesId}
+	</select>
+
+</mapper>

@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.rupeng</groupId>
+		<artifactId>rupeng-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>rupeng-pojo</artifactId>
+
+	<dependencies>
+		<!-- 数据校验注解依赖 -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- 主要是提供@JsonFormat，解决 springMVC 中 @ResponseBody 返回的json字符串中日期数据的格式问题 -->
+		<!-- 如在日期字段上标注 @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = 
+			"GMT+8") -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+	</dependencies>
+</project>

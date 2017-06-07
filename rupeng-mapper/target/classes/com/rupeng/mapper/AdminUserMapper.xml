@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rupeng.mapper.AdminUserMapper">
+
+	<insert id="insert" parameterType="AdminUser">
+		insert into T_AdminUsers(account,passwordSalt,password)
+		values(#{account},#{passwordSalt},#{password})
+	</insert>
+
+	<update id="update" parameterType="AdminUser">
+		update T_AdminUsers set
+		account=#{account},
+		passwordSalt=#{passwordSalt},
+		password=#{password},
+		isDisabled=#{isDisabled}
+		where id=#{id}
+	</update>
+
+
+	<delete id="delete" parameterType="long">
+		update T_AdminUsers set isDeleted=true where id=#{id}
+	</delete>
+
+	<select id="select" parameterType="AdminUser" resultType="AdminUser">
+		select * from T_AdminUsers
+		where isDeleted=false
+		<if test="id!=null"> and id=#{id} </if>
+		<if test="account!=null"> and account=#{account} </if>
+		<if test="password!=null"> and password=#{password} </if>
+	</select>
+
+</mapper>

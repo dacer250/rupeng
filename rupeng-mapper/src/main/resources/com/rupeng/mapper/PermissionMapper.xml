@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rupeng.mapper.PermissionMapper">
+
+	<insert id="insert" parameterType="Permission">
+		insert into T_Permissions(path,description) values(#{path},#{description})
+	</insert>
+
+	<update id="update" parameterType="Permission">
+		update T_Permissions set
+		path=#{path},
+		description=#{description}
+		where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="long">
+		update T_Permissions set isDeleted=true where id=#{id}
+	</delete>
+
+
+	<select id="select" parameterType="Permission" resultType="Permission">
+		select * from T_Permissions
+		where isDeleted=false
+		<if test="id!=null"> and id=#{id} </if>
+		<if test="path!=null"> and path=#{path} </if>
+		<if test="description!=null"> and description like #{description} </if>
+	</select>
+
+</mapper>

@@ -1,0 +1,25 @@
+package com.rupeng.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.rupeng.pojo.Question;
+import com.rupeng.pojo.QuestionAnswer;
+
+@Service
+public class QuestionService extends BaseService<Question> {
+
+	@Autowired
+	private QuestionAnswerService questionAnswerService;
+	
+	public void adopt(Question question, QuestionAnswer questionAnswer) {
+		update(question);
+		questionAnswerService.update(questionAnswer);
+	}
+
+	public void pageOfMyAnswered(int pageNum, int pageSize, Long userId) {
+		//
+		
+	}
+
+}
