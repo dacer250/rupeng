@@ -1,7 +1,0 @@
-INDEX VERSION 1.3+D:\Java\eclipse-jee-mars-2\workspace3\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
-3620863486.index
-831694531.index
-3851020364.index
-1167279296.index
-756175980.index
-2887609088.index

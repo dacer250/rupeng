@@ -1,7 +1,0 @@
-#Tomcat publish data
-#Sat Jun 03 04:19:00 CST 2017
-org.eclipse.jst.j2ee.server\:rupeng-mapper=WEB-INF/lib/rupeng-mapper-0.0.1-SNAPSHOT.jar
-org.eclipse.jst.j2ee.server\:rupeng-service=WEB-INF/lib/rupeng-service-0.0.1-SNAPSHOT.jar
-org.eclipse.jst.jee.server\:/binary\:C\:\\Users\\Gao\\.m2\\repository\\org\\springframework\\spring-web\\4.3.2.RELEASE\\spring-web-4.3.2.RELEASE.jar=WEB-INF/lib/spring-web-4.3.2.RELEASE.jar
-org.eclipse.jst.j2ee.server\:rupeng-common=WEB-INF/lib/rupeng-common-0.0.1-SNAPSHOT.jar
-org.eclipse.jst.j2ee.server\:rupeng-pojo=WEB-INF/lib/rupeng-pojo-0.0.1-SNAPSHOT.jar
